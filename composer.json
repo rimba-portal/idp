@@ -1,25 +1,31 @@
 {
-  "name": "rimba/idp",
-  "description": "Basic Laravel Passport IdP for Rimba client applications.",
-  "type": "library",
-  "license": "Apache-2.0",
-  "require": {
-    "php": "^8.3|^8.4",
-    "laravel/passport": "^13.0",
-    "rimba/foundation": "*"
-  },
-  "autoload": {
-    "psr-4": {
-      "Rimba\\Idp\\": "src/"
-    }
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Rimba\\Idp\\IdpServiceProvider"
-      ]
-    }
-  },
-  "minimum-stability": "alpha",
-  "prefer-stable": true
+    "name": "rimba/idp",
+    "description": "Laravel Passport-based Identity Provider (IdP) package for local apps to use as SSO",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "BIT Ecosystem",
+            "email": "bit.ecosystem@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "laravel/passport": "^13.0",
+        "rimba/foundation": "^1.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Rimba\\Idp\\IdpServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+           "Rimba\\Idp\\": "src/"
+        }
+    },
+    "minimum-stability": "alpha",
+    "prefer-stable": true
 }
