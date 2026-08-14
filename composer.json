@@ -1,28 +1,17 @@
 {
   "name": "rimba/idp",
-  "description": "Laravel Passport-based OAuth2 identity provider foundation for the Rimba ecosystem.",
+  "description": "Simple Laravel Passport IdP for Rimba client applications.",
   "type": "library",
   "license": "Apache-2.0",
   "require": {
     "php": "^8.3|^8.4",
-    "laravel/passport": "^13.0",
-    "rimba/foundation": "^1.0"
+    "laravel/passport": "^12.0|^13.0",
+    "rimba/foundation": "*"
   },
   "autoload": {
     "psr-4": {
       "Rimba\\Idp\\": "src/"
-    },
-    "classmap": [
-      "src/Models",
-      "src/Enums",
-      "src/Actions",
-      "src/Services",
-      "src/Events",
-      "src/Listeners",
-      "src/Policies",
-      "src/Http/API/Controllers",
-      "src/Http/API/Resources"
-    ]
+    }
   },
   "extra": {
     "laravel": {
@@ -31,6 +20,6 @@
       ]
     }
   },
-  "minimum-stability": "stable",
+  "minimum-stability": "alpha",
   "prefer-stable": true
 }

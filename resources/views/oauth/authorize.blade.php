@@ -8,7 +8,7 @@
 <body>
     <main>
         <h1>Authorize {{ $client->name }}</h1>
-        <p>This application requests access to:</p>
+        <p>The application requests access to:</p>
         <ul>
             @foreach ($scopes as $scope)
                 <li>{{ $scope->description ?? $scope->id }}</li>

@@ -9,7 +9,7 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-#[Description('Validate the Rimba IdP OAuth2 foundation configuration.')]
+#[Description('Check the simple Rimba IdP configuration.')]
 #[Signature('idp:diagnose')]
 class DiagnoseIdp extends Command
 {
@@ -19,13 +19,15 @@ class DiagnoseIdp extends Command
         $public = $path ? rtrim($path, '/').'/oauth-public.key' : storage_path('oauth-public.key');
         $private = $path ? rtrim($path, '/').'/oauth-private.key' : storage_path('oauth-private.key');
         $checks = [
-            'issuer configured' => filled(config('idp.issuer')),
-            'public key exists' => File::exists($public),
-            'private key exists' => File::exists($private),
-            'OIDC intentionally disabled until ID-token extension' => config('idp.oidc.enabled') === false,
+            'Issuer configured' => filled(config('idp.issuer')),
+            'Passport public key exists' => File::exists($public),
+            'Passport private key exists' => File::exists($private),
+            'User model exists' => class_exists(config('idp.models.user')),
+            'Role model exists' => class_exists(config('idp.models.role')),
+            'Permission model exists' => class_exists(config('idp.models.permission')),
         ];
-        foreach ($checks as $label => $ok) {
-            $this->{$ok ? 'info' : 'error'}(($ok ? '[OK] ' : '[FAIL] ').$label);
+        foreach ($checks as $name => $ok) {
+            $this->{$ok ? 'info' : 'error'}(($ok ? '[OK] ' : '[FAIL] ').$name);
         }
 
         return in_array(false, $checks, true) ? self::FAILURE : self::SUCCESS;

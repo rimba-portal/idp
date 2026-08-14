@@ -1,10 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Rimba\Idp\Http\API\Controllers\UserInfoController;
+declare(strict_types=1);
 
-Route::middleware(config('idp.routes.api_middleware', ['api', 'auth:api']))
-    ->prefix(config('idp.routes.prefix', 'idp'))
-    ->group(function (): void {
-        Route::get('/userinfo', UserInfoController::class)->name('idp.userinfo');
-    });
+use Illuminate\Support\Facades\Route;
+use Rimba\Idp\Http\API\Controllers\PermissionsController;
+use Rimba\Idp\Http\API\Controllers\RolesController;
+use Rimba\Idp\Http\API\Controllers\UserInfoController;
+use Rimba\Idp\Http\API\Controllers\UsersController;
+
+Route::prefix('idp')->middleware(['api', 'auth:api'])->group(function (): void {
+    Route::get('/user', UserInfoController::class)->name('idp.user');
+    Route::get('/users', UsersController::class)->middleware('idp.client-api:users.read')->name('idp.users');
+    Route::get('/roles', RolesController::class)->middleware('idp.client-api:roles.read')->name('idp.roles');
+    Route::get('/permissions', PermissionsController::class)->middleware('idp.client-api:permissions.read')->name('idp.permissions');
+});
