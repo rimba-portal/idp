@@ -1,11 +1,11 @@
 {
   "name": "rimba/idp",
-  "description": "Simple Laravel Passport IdP for Rimba client applications.",
+  "description": "Basic Laravel Passport IdP for Rimba client applications.",
   "type": "library",
   "license": "Apache-2.0",
   "require": {
     "php": "^8.3|^8.4",
-    "laravel/passport": "^12.0|^13.0",
+    "laravel/passport": "^13.0",
     "rimba/foundation": "*"
   },
   "autoload": {
