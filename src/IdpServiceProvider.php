@@ -4,49 +4,42 @@ declare(strict_types=1);
 
 namespace Rimba\Idp;
 
-use Illuminate\Auth\Events\Logout;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Event;
-use Laravel\Passport\Console\ClientCommand;
+use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Events\AccessTokenCreated;
 use Laravel\Passport\Passport;
-use Rimba\Base\Services\BitesServiceProvider;
-use Rimba\Idp\Listeners\RevokePassportTokensOnLogout;
+use Rimba\Idp\Console\Commands\DiagnoseIdp;
+use Rimba\Idp\Listeners\RecordAccessTokenIssued;
 
-class IdpServiceProvider extends BitesServiceProvider
+class IdpServiceProvider extends ServiceProvider
 {
-    protected string $viewsPath = __DIR__.'/../resources/views';
-
-    protected function bootPackage(): void
+    public function register(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        // If you load keys from a custom directory
-        Passport::loadKeysFrom('/etc/laravel/passport');
-        // Register the consent view (namespaced)
-        // Passport::authorizationView('rimba::oauth.authorize');
-        $this->commands([ClientCommand::class]);
-        Passport::authorizationView(function ($parameters): Factory|View {
-            return view('bites::oauth.authorize', $parameters);
-        });
-        Passport::tokensCan(['user:read' => 'Retrieve the user info']);
-        Passport::defaultScopes(['user:read']);
-
+        $this->mergeConfigFrom(__DIR__.'/../config/idp.php', 'idp');
     }
 
-    protected function registerPackage(): void
+    public function boot(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/bites_idp.php', 'bites_idp');
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
-        Event::listen(Logout::class, [RevokePassportTokensOnLogout::class, 'handle']);
-        // Default token TTLs, can be overridden by config
-        // Passport::tokensExpireIn(now()->addMinutes(config('bit-es-idp-passport.access_token_minutes', 60)));
-        // Passport::refreshTokensExpireIn(now()->addDays(config('bit-es-idp-passport.refresh_token_days', 30)));
-        Passport::tokensCan([
-            'profile' => 'Read user profile',
-            'email' => 'Read user email address',
-            'roles' => 'Read user roles',
-        ]);
-        Passport::DefaultScopes(['profile']);
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'rimba-idp');
 
+        if ($path = config('idp.passport_key_path')) {
+            Passport::loadKeysFrom($path);
+        }
+
+        Passport::tokensExpireIn(now()->addMinutes((int) config('idp.access_token_minutes')));
+        Passport::refreshTokensExpireIn(now()->addDays((int) config('idp.refresh_token_days')));
+        Passport::personalAccessTokensExpireIn(now()->addMonths((int) config('idp.personal_access_token_months')));
+        Passport::tokensCan((array) config('idp.scopes'));
+        Passport::defaultScopes((array) config('idp.default_scopes'));
+
+        Event::listen(AccessTokenCreated::class, RecordAccessTokenIssued::class);
+        if ($this->app->runningInConsole()) {
+            $this->publishes([__DIR__.'/../config/idp.php' => config_path('idp.php')], 'rimba-idp-config');
+            $this->publishes([__DIR__.'/../resources/views' => resource_path('views/vendor/rimba-idp')], 'rimba-idp-views');
+            $this->commands([DiagnoseIdp::class]);
+        }
     }
 }
