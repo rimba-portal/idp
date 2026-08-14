@@ -11,14 +11,14 @@ class UserInfoService implements UserInfoResolverContract
 {
     public function resolve(Authenticatable $user, array $scopes): array
     {
-        $staff = data_get($user, (string) config('idp.staff_relation', 'staff'));
+        $staff = data_get($user, (string) config('bites_idp.staff_relation', 'staff'));
 
         $payload = [
             'sub' => (string) $user->getAuthIdentifier(),
             'name' => data_get($user, 'name'),
             'email' => data_get($user, 'email'),
-            'auth_identifier' => data_get($user, config('idp.auth_identifier_column', 'auth_identifier')),
-            'staff_no' => data_get($staff, config('idp.staff_number_column', 'staff_no')),
+            'auth_identifier' => data_get($user, config('bites_idp.auth_identifier_column', 'auth_identifier')),
+            'staff_no' => data_get($staff, config('bites_idp.staff_number_column', 'staff_no')),
         ];
 
         if (in_array('roles', $scopes, true)) {

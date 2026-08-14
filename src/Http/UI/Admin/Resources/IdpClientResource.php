@@ -35,6 +35,7 @@ class IdpClientResource extends Resource
 
     public static function table(Table $table): Table
     {
+
         return $table
             ->columns([
                 TextColumn::make('code')->searchable()->copyable(),
@@ -72,7 +73,7 @@ class ListIdpClients extends ListRecords
                         ->simple(TextInput::make('url')->url()->required())
                         ->minItems(1)->required(),
                     CheckboxList::make('allowed_scopes')
-                        ->options(config('idp.scopes'))->default(config('idp.default_scopes')),
+                        ->options(config('bites_idp.scopes'))->default(config('bites_idp.default_scopes')),
                     Toggle::make('public')->helperText('Enable for browser/SPA clients using PKCE.'),
                     Toggle::make('allow_users_api'),
                     Toggle::make('allow_roles_api'),
