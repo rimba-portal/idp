@@ -19,9 +19,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Rimba\Idp\Models\IdpClient;
 use Rimba\Idp\Services\ClientService;
+use Rimba\Who\Traits\RequiresFaceVerification;
 
 class IdpClientResource extends Resource
 {
+    use RequiresFaceVerification;
+
     protected static ?string $model = IdpClient::class;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-key';
