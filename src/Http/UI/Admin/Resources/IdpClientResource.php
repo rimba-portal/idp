@@ -19,7 +19,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Rimba\Idp\Models\IdpClient;
 use Rimba\Idp\Services\ClientService;
-use Rimba\Who\Traits\RequiresFaceVerification;
+
+// use Rimba\Who\Traits\RequiresFaceVerification;
 
 class IdpClientResource extends Resource
 {
@@ -58,7 +59,7 @@ class IdpClientResource extends Resource
 
 class ListIdpClients extends ListRecords
 {
-    use RequiresFaceVerification;
+    // use RequiresFaceVerification;
 
     protected static string $resource = IdpClientResource::class;
 
