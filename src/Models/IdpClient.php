@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Rimba\Idp\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Unguarded;
 use Illuminate\Database\Eloquent\Model;
 
+#[Unguarded]
 class IdpClient extends Model
 {
-    protected $guarded = [];
-
     protected function casts(): array
     {
         return [
